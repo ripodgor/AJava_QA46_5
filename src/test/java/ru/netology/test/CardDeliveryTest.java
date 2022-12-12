@@ -1,6 +1,5 @@
 package ru.netology.test;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
@@ -8,16 +7,12 @@ import ru.netology.data.DataGenerator;
 
 import java.time.Duration;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.appear;
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class CardDeliveryTest {
-
-    @BeforeAll
-    static void receiveCities() {
-        DataGenerator.getCityList();
-    }
 
     @BeforeEach
     void setup() {
@@ -26,34 +21,10 @@ public class CardDeliveryTest {
 
     @Test
     void shouldSendForm() {
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
+        String planningDate = DataGenerator.generateDate(7);
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
         $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
-        $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
-        $("[data-test-id='agreement'] span").click();
-        $(withText("Запланировать")).click();
-        $(".notification__content").shouldHave(text("Встреча успешно запланирована на " + planningDate), Duration.ofSeconds(15));
-    }
-
-    @Test
-    void shouldSendFormWithWrongDateFormat() {
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
-        $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
-        $("[data-test-id='name'] input").val(DataGenerator.generateName());
-        $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
-        $("[data-test-id='agreement'] span").click();
-        $(withText("Запланировать")).click();
-        $(".notification__content").shouldHave(text("Встреча успешно запланирована на " + planningDate), Duration.ofSeconds(15));
-    }
-
-    @Test
-    void shouldAcceptYoInName() {
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
-        $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
-        $("[data-test-id='name'] input").val("Семёнов Пётр");
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
         $(withText("Запланировать")).click();
@@ -62,7 +33,7 @@ public class CardDeliveryTest {
 
     @Test
     void shouldAcceptYoInCity() {
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
+        String planningDate = DataGenerator.generateDate(7);
         $("[data-test-id='city'] input").val("Орёл");
         $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
@@ -74,7 +45,7 @@ public class CardDeliveryTest {
 
     @Test
     void shouldAcceptDash() {
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
+        String planningDate = DataGenerator.generateDate(7);
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
         $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
         $("[data-test-id='name'] input").val("Петрова-Водкина Анна-Мария");
@@ -86,7 +57,7 @@ public class CardDeliveryTest {
 
     @Test
     void shouldSendWithoutPlusInPhone() {
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
+        String planningDate = DataGenerator.generateDate(7);
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
         $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
@@ -101,8 +72,8 @@ public class CardDeliveryTest {
         String city = DataGenerator.generateCity();
         String name = DataGenerator.generateName();
         String phone = DataGenerator.generatePhone();
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
-        String secondPlanningDate = DataGenerator.generateDate(5, "dd.MM.yyyy");
+        String planningDate = DataGenerator.generateDate(7);
+        String secondPlanningDate = DataGenerator.generateDate(5);
         $("[data-test-id='city'] input").val(city);
         $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
         $("[data-test-id='name'] input").val(name);
@@ -112,7 +83,7 @@ public class CardDeliveryTest {
         $(".notification__content").shouldHave(text("Встреча успешно запланирована на " + planningDate), Duration.ofSeconds(15));
         open("http://localhost:9999");
         $("[data-test-id='city'] input").val(city);
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(5, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(5));
         $("[data-test-id='name'] input").val(name);
         $("[data-test-id='phone'] input").val(phone);
         $("[data-test-id='agreement'] span").click();
@@ -141,7 +112,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendWithoutName() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
         $(withText("Запланировать")).click();
@@ -151,7 +122,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendWithoutPhone() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
         $("[data-test-id='agreement'] span").click();
         $(withText("Запланировать")).click();
@@ -161,7 +132,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendWithoutAgreement() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $(withText("Запланировать")).click();
@@ -171,7 +142,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendWithoutSurname() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val("Иван");
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -182,7 +153,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendWithSpaceForName() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val(" ");
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -193,7 +164,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendWithDashForName() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val("-");
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -204,7 +175,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendCityOutOfList() {
         $("[data-test-id='city'] input").val("Королев");
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -216,7 +187,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotAcceptDateInPast() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(-7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(-7));
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -228,7 +199,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendLatinName() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val("Ivanov Ivan");
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -240,7 +211,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendSpecialSymbolsForName() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val("!#&?");
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -252,7 +223,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendNumbersInName() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val("Иван 1");
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
@@ -264,7 +235,7 @@ public class CardDeliveryTest {
     @Test
     void shouldNotSendLessDigitsInPhone() {
         $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7, "dd.MM.yyyy"));
+        $("[data-test-id='date'] input").doubleClick().sendKeys(DataGenerator.generateDate(7));
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
         $("[data-test-id='phone'] input").val("+799911122");
         $("[data-test-id='agreement'] span").click();
@@ -275,29 +246,10 @@ public class CardDeliveryTest {
 
     @Test
     void shouldUseCityList() {
-        String planningDate = DataGenerator.generateDate(7, "dd.MM.yyyy");
+        String planningDate = DataGenerator.generateDate(7);
         $("[data-test-id='city'] input").val("мо");
         $$(".menu-item__control").findBy(text("Москва")).click();
         $("[data-test-id='date'] input").doubleClick().sendKeys(planningDate);
-        $("[data-test-id='name'] input").val(DataGenerator.generateName());
-        $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
-        $("[data-test-id='agreement'] span").click();
-        $(withText("Запланировать")).click();
-        $(".notification__content").shouldHave(text("Встреча успешно запланирована на " + planningDate), Duration.ofSeconds(15));
-    }
-
-    @Test
-    void shouldUseWebCalendarWithinCurrentMonth() {
-        int defaultCalendarShift = 3;
-        int planningDateShift = 7;
-        String planningDate = DataGenerator.generateDate(planningDateShift, "dd.MM.yyyy");
-        $("[data-test-id='city'] input").val(DataGenerator.generateCity());
-        $("[data-test-id='date'] button").click();
-        if (!DataGenerator.generateDate(defaultCalendarShift, "MM")
-                .equals(DataGenerator.generateDate(planningDateShift, "MM"))) {
-            $("[data-step='1'].calendar__arrow_direction_right").click();
-        }
-        $$("[data-day]").findBy(exactText(DataGenerator.generateDate(planningDateShift, "d"))).click();
         $("[data-test-id='name'] input").val(DataGenerator.generateName());
         $("[data-test-id='phone'] input").val(DataGenerator.generatePhone());
         $("[data-test-id='agreement'] span").click();
